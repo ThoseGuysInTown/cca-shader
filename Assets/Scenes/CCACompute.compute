@@ -108,31 +108,43 @@ void Render(uint3 id, float state, int count) {
 	}
 
 	// Range Count Color
-	if (false) {
+	if (true) {
 		hsb.x = hsb.y = hsb.z = c;
-		hsb.x = lerp(.7, .3, hsb.x);
-		hsb.y += .7;
-		hsb.z = clamp(hsb.z, 0, 1);
-		outTex[id.xy] = hsb2rgb(hsb);
+		// hsb.x = lerp(.7, .3, hsb.x);
+		// hsb.y += .7;
+		hsb.z = clamp(hsb.z, .0, 1);
+
+        if (id.x > rez/2 || id.y > rez/2) {
+            outTex[id.xy] = colors[hsb.z+1.0];
+        } else if (id.x < rez/2 || id.y < rez/2) {
+            outTex[id.xy] = colors[hsb.z-1.0];
+        }
+		// outTex[id.xy] = hsb2rgb(hsb);
 	}
 
 	// TRY:
 	// 3/15/19/M
 	// Range Count Fade Color
-	if (false) {
+	if (true) {
 		hsb.x = hsb.y = hsb.z = c;
-		hsb.x = lerp(.4, 1, hsb.x);  	// 1/3/4 M
+		// hsb.x = lerp(.4, 1, hsb.x);  	// 1/3/4 M
 		// hsb.x = lerp(0, .1, hsb.x);  	// 8/14/2/N
 		// hsb.y += .7;
-		outTex[id.xy] += hsb2rgb(hsb);
-		outTex[id.xy] *= .90; // 1/3/4/M
-		// outTex[id.xy] *= .70;
+		if (id.x < 1.0) {
+            outTex[id.xy] += hsb2rgb(hsb);
+        } else {
+            outTex[id.xy] -= hsb2rgb(hsb);
+        }
+		// outTex[id.xy] *= .90; // 1/3/4/M
+
+        // float sin = sin(hsb.x);
+		// outTex[id.xy] += sin;
 	}
 
 	// Preset index
-	if (true) {
-		outTex[id.xy] = colors[state];
-	}
+	// if (true) {
+	// 	outTex[id.xy] = colors[state];
+	// }
 
 	////////////////////////////////////////////
 	// Crop
