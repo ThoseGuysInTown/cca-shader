@@ -1,5 +1,6 @@
 #pragma kernel ResetKernel
 #pragma kernel StepKernel
+#pragma kernel SecondaryNoiseKernel
 
 Texture2D<float> readTex;
 SamplerState sampler_readTex;
@@ -176,3 +177,13 @@ void StepKernel(uint3 id : SV_DispatchThreadID)
 	Render(id, state, count);
 }
 
+
+[numthreads(1, 1, 1)]
+void SecondaryNoiseKernel(uint3 id : SV_DispatchThreadID)
+{
+	// if the state will not be a wall
+	if ((uint) readTex[id.xy] < (uint) nstates) {
+		// add noise
+		writeTex[id.xy] = (int)(Random(id.xy).x * nstates);
+	}
+}
